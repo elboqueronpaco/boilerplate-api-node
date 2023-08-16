@@ -1,9 +1,25 @@
 const express = require('express')
 const movies = require('./database/movies.json')
 const crypto = require('crypto')
+const cors = require('cors')
 const { validateMovie, validatePartialMovie } = require('./validator/movies')
 
 const app = express()
+app.use(cors({
+    origin: (origin, callback) => {
+        const ACCEPTED_ORIGINGS = [
+            'http://localhost:3000',
+            'http://localhost:5173'
+        ]
+        if (ACCEPTED_ORIGINGS.includes(origin)) {
+            return callback(null, true)
+        }
+        if (!origin){
+            return callback(null, true)
+        }
+        return callback(new Error('Not allowed by CORS'))
+    }
+}))
 app.disable('x-powered-by')
 app.use(express.json())
 app.use(express.urlencoded({extended: false}))
