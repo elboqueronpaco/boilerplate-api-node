@@ -1,7 +1,7 @@
 const express = require('express')
 const movies = require('./database/movies.json')
 const crypto = require('crypto')
-const { validateMovie } = require('./validator/movies')
+const { validateMovie, validatePartialMovie } = require('./validator/movies')
 
 const app = express()
 app.disable('x-powered-by')
@@ -42,6 +42,29 @@ app.post('/api/v1/movies', (req, res) => {
     }
     movies.push(newMovie)
     res.status(201).json(newMovie)
+})
+app.patch('/api/v1/movies/:id', (req, res) => {
+    const result = validatePartialMovie(req.body)
+
+  if (result.err) {
+    return res.status(400).json({error: JSON.parse(result.error.message)})
+  }
+
+  const { id } = req.params
+  const movieIndex = movies.findIndex(movie => movie.id === id)
+
+  if (movieIndex === -1) {
+    return res.status(404).json({ message: 'Movie not found' })
+  }
+
+  const updateMovie = {
+    ...movies[movieIndex],
+    ...result.data
+  }
+
+  movies[movieIndex] = updateMovie
+
+  return res.json(updateMovie)
 })
 app.use((req, res) =>{
     res.status(404).send('<h2>Page Not Found</h2>')
