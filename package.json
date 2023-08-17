@@ -1,12 +1,12 @@
 {
   "name": "boilerplate-api-node",
-  "version": "0.01.0-Beta",
-  "description": "Creación de api-res con expres type common  y como data.json con cors",
+  "version": "0.02.0-Beta",
+  "description": "Creación de api-res con expres type module  y como data.json con cors",
   "main": "index.js",
   "scripts": {
     "dev": "node --watch src/index.js"
   },
-  "type": "commonjs",
+  "type": "module",
   "keywords": [],
   "author": "",
   "license": "ISC",

@@ -1,8 +1,11 @@
-const express = require('express')
+import express, { json, urlencoded } from 'express'
+//import movies from './database/movies.json'
+import { randomUUID } from 'crypto'
+import cors from 'cors'
+import { validateMovie, validatePartialMovie } from './validator/movies.js'
+import { createRequire } from 'node:module'
+const require = createRequire(import.meta.url)
 const movies = require('./database/movies.json')
-const crypto = require('crypto')
-const cors = require('cors')
-const { validateMovie, validatePartialMovie } = require('./validator/movies')
 
 const app = express()
 app.use(cors({
@@ -21,8 +24,8 @@ app.use(cors({
     }
 }))
 app.disable('x-powered-by')
-app.use(express.json())
-app.use(express.urlencoded({extended: false}))
+app.use(json())
+app.use(urlencoded({extended: false}))
 const port = process.env.PORT ?? 8000
 app.get('/', (req, res) =>{
     res.status(200).json({message: 'Mi pagina'})
@@ -53,7 +56,7 @@ app.post('/api/v1/movies', (req, res) => {
     if(result.error)
         return res.status(400).json({error: JSON.parse(result.error.message)})
     const newMovie = {
-        id: crypto.randomUUID(),
+        id: randomUUID(),
         ...result.data
     }
     movies.push(newMovie)
